@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "937936608561",
+    "project_id": "weconnect-c291e",
+    "storage_bucket": "weconnect-c291e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937936608561:android:50c033c177309d96c1a410",
+        "android_client_info": {
+          "package_name": "com.samriddhi.weconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937936608561-9lqb1tkf9bfcds8t3oaib48pjfc99tut.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.samriddhi.weconnect",
+            "certificate_hash": "18e5319fe67b86b959f891de113f2b1b35ec1b26"
+          }
+        },
+        {
+          "client_id": "937936608561-rhto80ju4oppv80o5muc8l45ogoblmia.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1j0JqHI-2EmnMdcMs18JCqb7VfOn1PVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937936608561-rhto80ju4oppv80o5muc8l45ogoblmia.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "937936608561-6k94npsf2tqef4vr26s8gjmbpjrg1k4r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.samriddhi.weconnect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
