@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:weconnect/screens/activity_feed.dart';
+import 'package:weconnect/screens/profile.dart';
+import 'package:weconnect/screens/search.dart';
+import 'package:weconnect/screens/timeline.dart';
+import 'package:weconnect/screens/upload.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -10,10 +15,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isAuth = false;
+  PageController pageController;
+  int pageIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    pageController = PageController();
     // detects when user is signed in
     googleSignIn.onCurrentUserChanged.listen((account) {
       handleSignIn(account);
@@ -41,6 +49,12 @@ class _HomeState extends State<Home> {
     }
   }
 
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   login() {
     googleSignIn.signIn();
   }
@@ -49,7 +63,72 @@ class _HomeState extends State<Home> {
     googleSignIn.signOut();
   }
 
+  onPageChanged(int pageIndex) {
+    setState(() {
+      this.pageIndex = pageIndex;
+    });
+  }
+
+  onTap(int pageIndex) {
+    pageController.jumpToPage(pageIndex);
+  }
+
   Scaffold buildAuthScreen() {
+    return Scaffold(
+        body: PageView(
+          children: [
+            Timeline(),
+            ActivityFeed(),
+            Upload(),
+            Search(),
+            Profile(),
+          ],
+          controller: pageController,
+          //function takes index
+          onPageChanged: onPageChanged,
+          physics: NeverScrollableScrollPhysics(),
+        ),
+        bottomNavigationBar: new Theme(
+          data: Theme.of(context).copyWith(
+              // sets the background color of the `BottomNavigationBar`
+              //  canvasColor: Theme.of(context).accentColor,
+              // sets the active color of the `BottomNavigationBar` if `Brightness` is light
+              primaryColor: Theme.of(context).primaryColor,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .copyWith(caption: new TextStyle(color: Colors.yellow))),
+          child: BottomNavigationBar(
+            currentIndex: pageIndex,
+            onTap: onTap,
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: Theme.of(context).primaryColor,
+            items: [
+              BottomNavigationBarItem(
+                label: '',
+                icon: Icon(Icons.whatshot),
+              ),
+              BottomNavigationBarItem(
+                label: '',
+                icon: Icon(Icons.notifications_active),
+              ),
+              BottomNavigationBarItem(
+                label: '',
+                icon: Icon(
+                  Icons.photo_camera,
+                  size: 35.0,
+                ),
+              ),
+              BottomNavigationBarItem(
+                label: '',
+                icon: Icon(Icons.search),
+              ),
+              BottomNavigationBarItem(
+                label: '',
+                icon: Icon(Icons.account_circle),
+              ),
+            ],
+          ),
+        ));
     // return RaisedButton(
     //   onPressed: logout,
     //   child: Text('Logout'),
