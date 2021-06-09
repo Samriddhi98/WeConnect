@@ -1,12 +1,24 @@
-import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import 'package:flutter/material.dart';
+import 'package:weconnect/models/user.dart';
 import 'package:weconnect/screens/activity_feed.dart';
+import 'package:weconnect/screens/create_account.dart';
 import 'package:weconnect/screens/profile.dart';
 import 'package:weconnect/screens/search.dart';
 import 'package:weconnect/screens/timeline.dart';
 import 'package:weconnect/screens/upload.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final Reference storageRef = FirebaseStorage.instance.ref();
+final usersRef = FirebaseFirestore.instance.collection('users');
+final postsRef = FirebaseFirestore.instance.collection('posts');
+
+final DateTime timestamp = DateTime.now();
+User currentUser;
 
 class Home extends StatefulWidget {
   @override
@@ -22,12 +34,14 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     pageController = PageController();
+
     // detects when user is signed in
     googleSignIn.onCurrentUserChanged.listen((account) {
       handleSignIn(account);
     }, onError: (err) {
       print('Error signing in: $err');
     });
+
     // reauthenticate user when app is opened
     googleSignIn.signInSilently(suppressErrors: false).then((account) {
       handleSignIn(account);
@@ -38,7 +52,8 @@ class _HomeState extends State<Home> {
 
   handleSignIn(GoogleSignInAccount account) {
     if (account != null) {
-      print('User signed in!: $account');
+      createUserInFirestore();
+      // print('User signed in!: $account');
       setState(() {
         isAuth = true;
       });
@@ -47,6 +62,32 @@ class _HomeState extends State<Home> {
         isAuth = false;
       });
     }
+  }
+
+  createUserInFirestore() async {
+    //1) check if user exists in users collection in db (according to id)
+    final GoogleSignInAccount user = googleSignIn.currentUser;
+    DocumentSnapshot doc = await usersRef.doc(user.id).get();
+
+    if (!doc.exists) {
+      //2) if user doesnt exist, then we want to take them to the create account page
+      final username = await Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CreateAccount()));
+      //3) get username from create account, use it to make new user document in user collection
+      usersRef.doc(user.id).set({
+        "id": user.id,
+        "username": username,
+        "email": user.email,
+        "displayName": user.displayName,
+        "bio": "",
+        "timestamp": timestamp,
+      });
+      doc = await usersRef.doc(user.id).get();
+    }
+
+    currentUser = User.fromDocument(doc);
+    print(currentUser);
+    print(currentUser.username);
   }
 
   @override
@@ -78,9 +119,13 @@ class _HomeState extends State<Home> {
     return Scaffold(
         body: PageView(
           children: [
-            Timeline(),
+            //Timeline(),
+            RaisedButton(
+              onPressed: logout,
+              child: Text('Logout'),
+            ),
             ActivityFeed(),
-            Upload(),
+            Upload(currentUser: currentUser),
             Search(),
             Profile(),
           ],
