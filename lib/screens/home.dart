@@ -16,6 +16,10 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 final Reference storageRef = FirebaseStorage.instance.ref();
 final usersRef = FirebaseFirestore.instance.collection('users');
 final postsRef = FirebaseFirestore.instance.collection('posts');
+final commentsRef = FirebaseFirestore.instance.collection('comments');
+final activityFeedRef = FirebaseFirestore.instance.collection('feed');
+final followersRef = FirebaseFirestore.instance.collection('followers');
+final followingRef = FirebaseFirestore.instance.collection('following');
 
 final DateTime timestamp = DateTime.now();
 User currentUser;
@@ -79,6 +83,7 @@ class _HomeState extends State<Home> {
         "username": username,
         "email": user.email,
         "displayName": user.displayName,
+        "photoUrl": user.photoUrl,
         "bio": "",
         "timestamp": timestamp,
       });
@@ -127,7 +132,7 @@ class _HomeState extends State<Home> {
             ActivityFeed(),
             Upload(currentUser: currentUser),
             Search(),
-            Profile(),
+            Profile(profileId: currentUser?.id),
           ],
           controller: pageController,
           //function takes index

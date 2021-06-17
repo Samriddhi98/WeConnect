@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:weconnect/models/user.dart';
 import 'package:weconnect/screens/home.dart';
+import 'package:weconnect/screens/profile.dart';
 import 'package:weconnect/widgets/progress.dart';
 
 class Search extends StatefulWidget {
@@ -119,7 +120,7 @@ class UserResult extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => print('tapper'),
+            onTap: () => showProfile(context, profileId: user.id),
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.grey,
@@ -144,4 +145,13 @@ class UserResult extends StatelessWidget {
       ),
     );
   }
+}
+
+showProfile(BuildContext context, {String profileId}) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Profile(
+                profileId: profileId,
+              )));
 }
